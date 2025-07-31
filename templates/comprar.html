@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Compra de Boleta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Festival Radio EPE 2025</h1>
+        <form method="POST" action="/comprar">
+            <label for="nombre">Nombre del comprador:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="correo">Correo electrónico:</label>
+            <input type="email" id="correo" name="correo" required>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
+
+            <label for="tipo">Tipo de boleta:</label>
+            <select id="tipo" name="tipo" required>
+                <option value="normal">En el evento</option>
+                <option value="preventa">Preventa</option>
+            </select>
+
+            <button type="submit" class="btn-azul">Comprar boleta</button>
+        </form>
+
+        <p><strong>¡Al realizar tu compra, la boleta llegara a tu correo electronico!</strong></p>
+        <a href="https://wa.me/573105781731" target="_blank" class="btn-verde">💳 Paga Aqui</a>
+    </div>
+</body>
+</html>

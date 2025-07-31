@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Escanear Boleta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Escanear Boleta</h1>
+
+        <form method="POST" action="/verificar">
+            <label for="codigo">Código único / QR:</label>
+            <input type="text" id="codigo" name="codigo" required>
+
+            <button type="submit" class="btn-azul">Verificar boleta</button>
+        </form>
+
+        <br>
+        <button onclick="iniciarEscaneo()" class="btn-amarillo">📷 Escanear QR</button>
+        <div id="qr-reader" style="width:100%; margin-top: 15px; display: none;"></div>
+
+        <br><br>
+        <a href="/comprar" class="btn-verde">← Volver a compra</a>
+    </div>
+
+    <script>
+    function iniciarEscaneo() {
+        const qrRegion = document.getElementById("qr-reader");
+        qrRegion.style.display = "block";
+
+        const qrScanner = new Html5Qrcode("qr-reader");
+
+        qrScanner.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: 250
+            },
+            qrCodeMessage => {
+                document.getElementById("codigo").value = qrCodeMessage;
+                qrScanner.stop();
+                qrRegion.style.display = "none";
+            },
+            errorMessage => {
+                // puedes mostrar errores si quieres
+            }
+        ).catch(err => {
+            alert("No se pudo acceder a la cámara: " + err);
+        });
+    }
+    </script>
+</body>
+</html>

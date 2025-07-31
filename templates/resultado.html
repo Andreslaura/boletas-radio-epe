@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ mensaje }}</h2>
+        <a href="/escanear" class="btn-verde">← Escanear otra boleta</a>
+    </div>
+</body>
+</html>
