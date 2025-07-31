@@ -11,8 +11,11 @@ from email.message import EmailMessage
 import pandas as pd
 from dotenv import load_dotenv
 
-# Cargar variables del entorno .env
-load_dotenv()
+# Cargar variables del entorno .env si existe
+try:
+    load_dotenv()
+except:
+    pass
 
 app = Flask(__name__)
 
@@ -22,9 +25,15 @@ CARPETA_BOLETAS = 'boletas'
 IMAGEN_FONDO = os.path.join('static', 'portada.jpg')
 
 # ======================
-# Rutas
+# Ruta principal (¡NECESARIA!)
 # ======================
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+# ======================
+# Comprar
+# ======================
 @app.route('/comprar', methods=['GET', 'POST'])
 def comprar():
     if request.method == 'POST':
@@ -36,11 +45,9 @@ def comprar():
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         id_unico = f'BOL{timestamp}'
 
-        # Asegurar carpeta
         if not os.path.exists(CARPETA_BOLETAS):
             os.makedirs(CARPETA_BOLETAS)
 
-        # Crear encabezado si no existe
         existe_csv = os.path.isfile(CSV_FILE)
         with open(CSV_FILE, 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
@@ -48,23 +55,25 @@ def comprar():
                 writer.writerow(['ID único', 'Nombre del comprador', 'Correo', 'Teléfono', 'Estado', 'Tipo de entrada'])
             writer.writerow([id_unico, nombre, correo, telefono, 'no usado', tipo])
 
-        # Crear boleta PDF
         ruta_pdf = os.path.join(CARPETA_BOLETAS, f'{id_unico}.pdf')
         generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf)
 
-        # Enviar al correo
         enviar_boleta(nombre, correo, ruta_pdf)
 
         return render_template('exito.html', nombre=nombre, correo=correo)
 
     return render_template('comprar.html')
 
-
+# ======================
+# Escaneo
+# ======================
 @app.route('/escanear')
 def escanear():
     return render_template('escanear.html')
 
-
+# ======================
+# Verificar QR
+# ======================
 @app.route('/verificar', methods=['POST'])
 def verificar():
     codigo = request.form.get('codigo', '').strip()
@@ -92,11 +101,9 @@ def verificar():
 
     return render_template('resultado.html', mensaje=mensaje)
 
-
 # ======================
-# Generar QR + PDF
+# Generador QR + PDF
 # ======================
-
 def generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf):
     data_qr = f'{id_unico};{nombre};{tipo}'
     qr = qrcode.make(data_qr)
@@ -129,11 +136,9 @@ def generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf):
     c.save()
     os.remove(ruta_qr)
 
-
 # ======================
-# Enviar correo
+# Envío de correo
 # ======================
-
 def enviar_boleta(nombre, correo_destino, pdf_path):
     remitente = os.getenv("GMAIL_USER")
     contrasena = os.getenv("GMAIL_PASS")
@@ -151,10 +156,8 @@ def enviar_boleta(nombre, correo_destino, pdf_path):
         smtp.login(remitente, contrasena)
         smtp.send_message(msg)
 
-
 # ======================
-# Iniciar
+# Inicio para local (no se usa en Render)
 # ======================
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
