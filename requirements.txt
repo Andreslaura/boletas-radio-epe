@@ -3,6 +3,7 @@ gunicorn==21.2.0
 qrcode==8.2
 reportlab==4.4.2
 fpdf==1.7.2
-pandas==2.2.2
+pandas==1.5.3
+numpy==1.23.5
 requests==2.32.4
 python-dotenv==1.0.1
