@@ -140,8 +140,8 @@ def generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf):
 # Envío de correo
 # ======================
 def enviar_boleta(nombre, correo_destino, pdf_path):
-    remitente = os.getenv("GMAIL_USER")
-    contrasena = os.getenv("GMAIL_PASS")
+    remitente = os.getenv("andresmayorgajimenez4@gmail.com")
+    contrasena = os.getenv("ioqu drni vfil fzfv")
 
     msg = EmailMessage()
     msg['Subject'] = '🎟️ Tu boleta para el evento'
