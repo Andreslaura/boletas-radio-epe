@@ -37,30 +37,38 @@ def index():
 @app.route('/comprar', methods=['GET', 'POST'])
 def comprar():
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        correo = request.form['correo']
-        telefono = request.form['telefono']
-        tipo = request.form['tipo']
+        try:
+            nombre = request.form['nombre']
+            correo = request.form['correo']
+            telefono = request.form['telefono']
+            tipo = request.form['tipo']
 
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-        id_unico = f'BOL{timestamp}'
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            id_unico = f'BOL{timestamp}'
 
-        if not os.path.exists(CARPETA_BOLETAS):
-            os.makedirs(CARPETA_BOLETAS)
+            if not os.path.exists(CARPETA_BOLETAS):
+                os.makedirs(CARPETA_BOLETAS)
 
-        existe_csv = os.path.isfile(CSV_FILE)
-        with open(CSV_FILE, 'a', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            if not existe_csv:
-                writer.writerow(['ID único', 'Nombre del comprador', 'Correo', 'Teléfono', 'Estado', 'Tipo de entrada'])
-            writer.writerow([id_unico, nombre, correo, telefono, 'no usado', tipo])
+            existe_csv = os.path.isfile(CSV_FILE)
+            with open(CSV_FILE, 'a', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                if not existe_csv:
+                    writer.writerow(['ID único', 'Nombre del comprador', 'Correo', 'Teléfono', 'Estado', 'Tipo de entrada'])
+                writer.writerow([id_unico, nombre, correo, telefono, 'no usado', tipo])
 
-        ruta_pdf = os.path.join(CARPETA_BOLETAS, f'{id_unico}.pdf')
-        generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf)
+            ruta_pdf = os.path.join(CARPETA_BOLETAS, f'{id_unico}.pdf')
+            generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf)
 
-        enviar_boleta(nombre, correo, ruta_pdf)
+            # 🔐 Desactiva el envío de correo si no hay credenciales
+            try:
+                enviar_boleta(nombre, correo, ruta_pdf)
+            except Exception as e:
+                print(f"⚠️ Error al enviar correo: {e}")
 
-        return render_template('exito.html', nombre=nombre, correo=correo)
+            return render_template('confirmacion.html', nombre=nombre, correo=correo)
+
+        except Exception as err:
+            return f"<h2>❌ Error inesperado al procesar la compra:</h2><pre>{err}</pre>"
 
     return render_template('comprar.html')
 
@@ -140,8 +148,8 @@ def generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf):
 # Envío de correo
 # ======================
 def enviar_boleta(nombre, correo_destino, pdf_path):
-    remitente = os.getenv("GMAIL_USER")
-    contrasena = os.getenv("GMAIL_PASS")
+    remitente = os.getenv("andresmayorgajimenez4@gmail.com")
+    contrasena = os.getenv("ioqu drni vfil fzfv")
 
     msg = EmailMessage()
     msg['Subject'] = '🎟️ Tu boleta para el evento'
