@@ -1,8 +1,8 @@
-Flask==3.0.2
+Flask==3.1.1
 gunicorn==21.2.0
-qrcode==7.4.2
-reportlab==4.0.4
+qrcode==8.2
+reportlab==4.4.2
 fpdf==1.7.2
-pandas==2.1.4
-requests==2.31.0
+pandas==2.2.2
+requests==2.32.4
 python-dotenv==1.0.1
