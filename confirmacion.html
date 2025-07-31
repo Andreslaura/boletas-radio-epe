@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Boleta enviada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            background-image: url("{{ url_for('static', filename='portada.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .overlay {
+            background-color: rgba(0,0,0,0.7);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background-color: #111;
+            padding: 30px 50px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .check {
+            font-size: 60px;
+            color: #3ae374;
+            margin-bottom: 15px;
+        }
+        .btn-volver {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #1dd1a1;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="card">
+            <div class="check">✔️</div>
+            <h1>Gracias {{ nombre }}, tu boleta fue enviada a <br>{{ correo }}</h1>
+            <a class="btn-volver" href="/comprar">← Comprar otra boleta</a>
+        </div>
+    </div>
+</body>
+</html>
