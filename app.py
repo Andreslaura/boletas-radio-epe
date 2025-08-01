@@ -136,25 +136,40 @@ def generar_qr_pdf(id_unico, nombre, tipo, ruta_pdf):
     c.save()
     os.remove(ruta_qr)
 
-# ======================
+import os
+import smtplib
+from email.message import EmailMessage
+
 # Envío de correo
 # ======================
 def enviar_boleta(nombre, correo_destino, pdf_path):
-    remitente = os.getenv("andresmayorgajimenez4@gmail.com")
-    contrasena = os.getenv("ioqu drni vfil fzfv")
+    # Obtener las variables de entorno
+    remitente = os.getenv("REMITENTE_EMAIL")  # Asegúrate de configurar esta variable en el entorno
+    contrasena = os.getenv("CONTRASENA_EMAIL")  # Asegúrate de configurar esta variable en el entorno
 
+    # Validar que las credenciales no sean None
+    if not remitente or not contrasena:
+        raise ValueError("El remitente o la contraseña no están configurados correctamente.")
+    
+    # Configurar el mensaje
     msg = EmailMessage()
     msg['Subject'] = '🎟️ Tu boleta para el evento'
     msg['From'] = remitente
     msg['To'] = correo_destino
     msg.set_content(f"Hola {nombre},\n\nGracias por tu compra. Adjuntamos tu boleta en PDF.\n\nNos vemos en el evento.")
 
+    # Adjuntar el archivo PDF
     with open(pdf_path, 'rb') as f:
         msg.add_attachment(f.read(), maintype='application', subtype='pdf', filename=os.path.basename(pdf_path))
 
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(remitente, contrasena)
-        smtp.send_message(msg)
+    # Enviar el correo usando SMTP
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(remitente, contrasena)
+            smtp.send_message(msg)
+            print("Correo enviado exitosamente.")
+    except Exception as e:
+        print(f"Error al enviar el correo: {e}")
 
 # ======================
 # Inicio para local (no se usa en Render)
